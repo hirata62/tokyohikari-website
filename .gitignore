@@ -1,0 +1,11 @@
+# 未使用の動画マスター素材（読み取り専用・将来の再エンコード用。サイトからは参照されない）
+images/hero-source.mp4
+images/hero-source2.mp4
+images/cta-source.mp4
+images/spare-skytree-sunrise.mp4
+images/tower-dusk.mp4
+
+# OS/同期ツールの管理ファイル
+desktop.ini
+Thumbs.db
+.DS_Store
