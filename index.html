@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Playfair+Display:wght@500;600&family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+Antique:wght@400;500;700;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/style.css?v=20260714" />
+  <link rel="stylesheet" href="css/style.css?v=20260721" />
 
   <!-- Favicon / App Icons -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -90,8 +90,8 @@
     <!-- ============ HERO ============ -->
     <section class="hero">
       <div class="hero__bg" role="img" aria-label="東京の街並み"></div>
-      <video class="hero__video" data-src="images/hero-dusk.mp4?v=20260716"
-             data-src-mobile="images/hero-dusk-mobile.mp4?v=20260716"
+      <video class="hero__video" data-src="images/hero-dusk.mp4?v=20260720"
+             data-src-mobile="images/hero-dusk-mobile.mp4?v=20260720"
              muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="hero__overlay"></div>
       <div class="container hero__inner">
@@ -261,10 +261,9 @@
             <a href="https://www.rakumachi.jp/syuuekibukken/dim2001/?realtor_id=16758" class="portal-card__link" target="_blank" rel="noopener">掲載物件を見る →</a>
           </div>
           <div class="portal-card">
-            <p class="portal-card__name">健美家</p>
-            <!-- TODO: 健美家の公式ロゴ素材（加盟店向けバナー等）の利用許諾を確認できたら、
-                 images/logo-kenbiya.png を配置してこのimgを有効化し、上のテキスト表示を削除する -->
-            <!-- <img src="images/logo-kenbiya.png" alt="健美家" height="32" loading="lazy" /> -->
+            <a href="https://www.kenbiya.com/kaisha/tokyohikari/" target="_blank" rel="noopener" class="portal-card__banner">
+              <img src="images/logo-kenbiya.png" alt="不動産投資と収益物件の情報サイト 健美家（けんびや）" width="575" height="205" loading="lazy" />
+            </a>
             <p class="portal-card__text">不動産投資ポータルサイト「健美家」の加盟店として、物件情報を掲載しています。</p>
             <a href="https://www.kenbiya.com/kaisha/tokyohikari/" class="portal-card__link" target="_blank" rel="noopener">掲載物件を見る →</a>
           </div>
@@ -358,7 +357,7 @@
 
     <!-- ============ CTA ============ -->
     <section class="cta-band cta-band--split">
-      <div class="cta-band__media">
+      <div class="cta-band__media reveal-clip">
         <!-- 昼の東京タワー・青空と流れる雲。画面に近づいたらJSで読み込み開始 -->
         <video class="cta-band__video" data-src="images/cta-tower-day.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
       </div>
@@ -438,6 +437,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=20260715"></script>
+  <script src="js/main.js?v=20260721"></script>
 </body>
 </html>

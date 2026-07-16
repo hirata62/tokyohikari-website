@@ -59,7 +59,7 @@
   }
 
   /* ---- Scroll reveal ---- */
-  var reveals = document.querySelectorAll(".reveal");
+  var reveals = document.querySelectorAll(".reveal, .reveal-clip");
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (reveals.length && !reduce && "IntersectionObserver" in window) {
@@ -67,7 +67,14 @@
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
+            var el = entry.target.__revealEl || entry.target;
+            el.classList.add("is-visible");
+            // reveal-clip: 動画側の合図(is-ready)が来なくても3秒後には必ず開く保険
+            if (el.classList.contains("reveal-clip")) {
+              setTimeout(function () {
+                el.classList.add("is-ready");
+              }, 3000);
+            }
             io.unobserve(entry.target);
           }
         });
@@ -75,7 +82,15 @@
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
     reveals.forEach(function (el) {
-      io.observe(el);
+      // clip-pathで初期の可視面積がゼロの要素は、ChromeのIntersectionObserverが
+      // 永久に「非交差」と判定するため、クリップされていない親セクションを代理で監視する
+      if (el.classList.contains("reveal-clip")) {
+        var sentinel = el.closest(".cta-band") || el;
+        sentinel.__revealEl = el;
+        io.observe(sentinel);
+      } else {
+        io.observe(el);
+      }
     });
   } else {
     reveals.forEach(function (el) {
@@ -150,21 +165,32 @@
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            var v = entry.target;
-            v.src = v.getAttribute("data-src");
-            v.removeAttribute("data-src");
-            v.addEventListener("playing", function () {
-              v.classList.add("is-playing");
-            }, { once: true });
-            v.play().catch(function () {});
-            vio.unobserve(v);
+            var v = entry.target.__lazyVideo || entry.target;
+            if (v.hasAttribute("data-src")) {
+              v.src = v.getAttribute("data-src");
+              v.removeAttribute("data-src");
+              v.addEventListener("playing", function () {
+                v.classList.add("is-playing");
+                var frame = v.closest(".reveal-clip");
+                if (frame) frame.classList.add("is-ready");
+              }, { once: true });
+              v.addEventListener("error", function () {
+                var frame = v.closest(".reveal-clip");
+                if (frame) frame.classList.add("is-ready");
+              }, { once: true });
+              v.play().catch(function () {});
+            }
+            vio.unobserve(entry.target);
           }
         });
       },
       { rootMargin: "300px 0px" }
     );
     lazyVideos.forEach(function (v) {
-      vio.observe(v);
+      // クリップされた額装内のvideoは、クリップされていない親セクションを代理で監視
+      var sentinel = v.closest(".reveal-clip") ? (v.closest(".cta-band") || v) : v;
+      sentinel.__lazyVideo = v;
+      vio.observe(sentinel);
     });
   }
 
@@ -209,6 +235,38 @@
         heroTicking = false;
       });
     }, { passive: true });
+  }
+
+  /* ---- アプリ切替・タブ復帰時に背景動画の再生を再開（スマホは復帰時に自動再開されないことがある） ---- */
+  if (!reduce) {
+    // pausedがfalseのまま映像だけ凍るケースがあるため、pausedは見ずに常にplay()を呼ぶ
+    // （再生中の動画へのplay()は無害）。失敗時はデコーダ破棄とみなし読み込み直して再挑戦
+    var resumeVideo = function (v) {
+      if (!v.currentSrc) return;
+      var p = v.play();
+      if (p && p.catch) {
+        p.catch(function () {
+          try {
+            v.load();
+            v.play().catch(function () {});
+          } catch (e) {}
+        });
+      }
+    };
+    var resumeBackgroundVideos = function () {
+      if (document.visibilityState === "hidden") return;
+      document.querySelectorAll(".hero__video, .cta-band__video, .media-band__video").forEach(resumeVideo);
+      // メニュー背景動画は「メニューが開いているときだけ」再開する（閉時停止は仕様）
+      var menuVideo = document.querySelector(".gnav.is-open .gnav__video");
+      if (menuVideo) resumeVideo(menuVideo);
+      // 復帰直後はメディア再開に失敗することがあるため、少し待ってもう一度
+      setTimeout(function () {
+        document.querySelectorAll(".hero__video, .cta-band__video, .media-band__video").forEach(resumeVideo);
+      }, 500);
+    };
+    document.addEventListener("visibilitychange", resumeBackgroundVideos);
+    window.addEventListener("pageshow", resumeBackgroundVideos);
+    window.addEventListener("focus", resumeBackgroundVideos);
   }
 
   /* ---- ページトップへ戻るボタン（スクロール600px超で表示） ---- */
