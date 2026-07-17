@@ -278,6 +278,8 @@
     window.onTurnstileReady = function () {
       cformReady = true;
       var btn = document.getElementById("cform-submit");
+      var warn = document.getElementById("cform-ts-warning");
+      if (warn) warn.hidden = true;
       if (btn && !btn.dataset.submitting) {
         btn.disabled = false;
         btn.textContent = "送信する";
@@ -292,11 +294,18 @@
         btn.textContent = "認証中…";
       }
     };
-    // Turnstile自体が読み込めない環境向けの保険（一定時間待っても認証が終わらなければ
-    // ボタンを解放する。この場合サーバー側でturnstile_failedとなり、既存のエラー表示に落ちる）
-    setTimeout(function () {
-      if (!cformReady) window.onTurnstileReady();
-    }, 8000);
+    // Turnstileが読み込めない・応答が来ない環境向けの案内表示。
+    // トークンが無い状態でボタンを解放すると必ずサーバー側で拒否される（missing-input-response）だけなので、
+    // ボタンは有効化せず、送信前にはっきり原因と代替連絡手段を伝える
+    var showTurnstileWarning = function () {
+      if (cformReady) return;
+      var btn = document.getElementById("cform-submit");
+      var warn = document.getElementById("cform-ts-warning");
+      if (warn) warn.hidden = false;
+      if (btn) btn.textContent = "認証に失敗しました";
+    };
+    window.onTurnstileScriptError = showTurnstileWarning;
+    setTimeout(showTurnstileWarning, 8000);
 
     cform.addEventListener("submit", function (e) {
       e.preventDefault();
