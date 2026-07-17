@@ -334,7 +334,11 @@
         .then(function (data) {
           if (!data.ok) throw new Error(data.error || "failed");
           cform.hidden = true;
-          document.getElementById("cform-done").hidden = false;
+          var done = document.getElementById("cform-done");
+          done.hidden = false;
+          // フォーム（縦に長い）が完了メッセージ（短い）に差し替わると
+          // ページ全体が縮んでスクロール位置がずれるため、明示的に合わせる
+          done.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
         })
         .catch(function () {
           err.hidden = false;
