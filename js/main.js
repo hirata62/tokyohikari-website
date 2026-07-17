@@ -297,15 +297,28 @@
     // Turnstileが読み込めない・応答が来ない環境向けの案内表示。
     // トークンが無い状態でボタンを解放すると必ずサーバー側で拒否される（missing-input-response）だけなので、
     // ボタンは有効化せず、送信前にはっきり原因と代替連絡手段を伝える
-    var showTurnstileWarning = function () {
+    var showTurnstileWarning = function (code) {
       if (cformReady) return;
       var btn = document.getElementById("cform-submit");
       var warn = document.getElementById("cform-ts-warning");
-      if (warn) warn.hidden = false;
+      if (warn) {
+        warn.hidden = false;
+        // 診断用: エラーコードを画面にも出す（原因特定用。落ち着いたら削除予定）
+        if (code) {
+          var codeEl = document.getElementById("cform-ts-code");
+          if (!codeEl) {
+            codeEl = document.createElement("span");
+            codeEl.id = "cform-ts-code";
+            warn.appendChild(codeEl);
+          }
+          codeEl.textContent = " [診断コード: " + code + "]";
+        }
+      }
       if (btn) btn.textContent = "認証に失敗しました";
     };
-    window.onTurnstileScriptError = showTurnstileWarning;
-    setTimeout(showTurnstileWarning, 8000);
+    window.onTurnstileScriptError = function () { showTurnstileWarning(); };
+    window.onTurnstileError = function (code) { showTurnstileWarning(code); };
+    setTimeout(function () { showTurnstileWarning(); }, 8000);
 
     cform.addEventListener("submit", function (e) {
       e.preventDefault();
