@@ -43,6 +43,11 @@ async function handleContact(request, env) {
   if (phone.length > 40) return json({ ok: false, error: "invalid_phone" }, 400);
   if (!message || message.length > 5000) return json({ ok: false, error: "invalid_message" }, 400);
 
+  console.log("diag: secrets present", {
+    hasTurnstileSecret: !!env.TURNSTILE_SECRET_KEY,
+    hasResendKey: !!env.RESEND_API_KEY,
+  });
+
   const verify = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -53,7 +58,10 @@ async function handleContact(request, env) {
     }),
   });
   const outcome = await verify.json();
-  if (!outcome.success) return json({ ok: false, error: "turnstile_failed" }, 403);
+  if (!outcome.success) {
+    console.log("diag: turnstile failed", outcome["error-codes"]);
+    return json({ ok: false, error: "turnstile_failed" }, 403);
+  }
 
   const body = [
     "ホームページのお問い合わせフォームから送信がありました。",
@@ -81,6 +89,9 @@ async function handleContact(request, env) {
     }),
   });
 
-  if (!res.ok) return json({ ok: false, error: "mail_failed" }, 502);
+  if (!res.ok) {
+    console.log("diag: resend failed", res.status, await res.text());
+    return json({ ok: false, error: "mail_failed" }, 502);
+  }
   return json({ ok: true });
 }
