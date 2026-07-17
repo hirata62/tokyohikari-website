@@ -214,13 +214,13 @@
               <label><input type="checkbox" id="cf-agree" required />
                 <span><a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意する</span></label>
             </div>
-            <div class="cf-turnstile" data-sitekey="0x4AAAAAAAD31RSPRLn8eCRQy" data-theme="light"></div>
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAAD31RSPRLn8eCRQy" data-theme="light" data-callback="onTurnstileReady" data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileReady"></div>
             <p class="cform__error" id="cform-error" hidden>
               送信に失敗しました。お手数ですが、時間をおいて再度お試しいただくか、
               お電話（03-6555-7250）またはメール（info@tokyohikari.jp）にてご連絡ください。
             </p>
             <div class="cform__submit">
-              <button type="submit" class="btn btn--gold" id="cform-submit">送信する</button>
+              <button type="submit" class="btn btn--gold" id="cform-submit" disabled>認証中…</button>
             </div>
           </form>
           <div class="cform__done" id="cform-done" hidden>
@@ -337,6 +337,6 @@
   </footer>
 
   <script src="https://challenges.cloudflare.com/turnstile/api.js" async defer></script>
-  <script src="js/main.js?v=20260722"></script>
+  <script src="js/main.js?v=20260723"></script>
 </body>
 </html>

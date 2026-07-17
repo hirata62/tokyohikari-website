@@ -272,6 +272,32 @@
   /* ---- お問い合わせフォーム送信（contact.htmlのみ存在） ---- */
   var cform = document.getElementById("contact-form");
   if (cform) {
+    var cformReady = false;
+    // Turnstileの認証（自動・非表示）が終わるまでボタンを押せなくし、
+    // 「missing-input-response」（トークン未生成のまま送信）を防ぐ
+    window.onTurnstileReady = function () {
+      cformReady = true;
+      var btn = document.getElementById("cform-submit");
+      if (btn && !btn.dataset.submitting) {
+        btn.disabled = false;
+        btn.textContent = "送信する";
+      }
+    };
+    // トークンの有効期限切れ時は再認証を待つ（Turnstileが自動で再試行する）
+    window.onTurnstileExpired = function () {
+      cformReady = false;
+      var btn = document.getElementById("cform-submit");
+      if (btn && !btn.dataset.submitting) {
+        btn.disabled = true;
+        btn.textContent = "認証中…";
+      }
+    };
+    // Turnstile自体が読み込めない環境向けの保険（一定時間待っても認証が終わらなければ
+    // ボタンを解放する。この場合サーバー側でturnstile_failedとなり、既存のエラー表示に落ちる）
+    setTimeout(function () {
+      if (!cformReady) window.onTurnstileReady();
+    }, 8000);
+
     cform.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!cform.reportValidity()) return;
@@ -279,6 +305,7 @@
       var err = document.getElementById("cform-error");
       err.hidden = true;
       btn.disabled = true;
+      btn.dataset.submitting = "1";
       btn.textContent = "送信中…";
       fetch("/api/contact", { method: "POST", body: new FormData(cform) })
         .then(function (res) { return res.json(); })
@@ -289,6 +316,7 @@
         })
         .catch(function () {
           err.hidden = false;
+          delete btn.dataset.submitting;
           btn.disabled = false;
           btn.textContent = "送信する";
           if (window.turnstile) window.turnstile.reset();
