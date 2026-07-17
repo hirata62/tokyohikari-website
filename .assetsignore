@@ -7,3 +7,4 @@ wrangler.jsonc
 .gitignore
 README.md
 images/README.txt
+worker.js

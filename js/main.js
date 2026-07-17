@@ -269,6 +269,33 @@
     window.addEventListener("focus", resumeBackgroundVideos);
   }
 
+  /* ---- お問い合わせフォーム送信（contact.htmlのみ存在） ---- */
+  var cform = document.getElementById("contact-form");
+  if (cform) {
+    cform.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!cform.reportValidity()) return;
+      var btn = document.getElementById("cform-submit");
+      var err = document.getElementById("cform-error");
+      err.hidden = true;
+      btn.disabled = true;
+      btn.textContent = "送信中…";
+      fetch("/api/contact", { method: "POST", body: new FormData(cform) })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data.ok) throw new Error(data.error || "failed");
+          cform.hidden = true;
+          document.getElementById("cform-done").hidden = false;
+        })
+        .catch(function () {
+          err.hidden = false;
+          btn.disabled = false;
+          btn.textContent = "送信する";
+          if (window.turnstile) window.turnstile.reset();
+        });
+    });
+  }
+
   /* ---- ページトップへ戻るボタン（スクロール600px超で表示） ---- */
   var toTop = document.createElement("button");
   toTop.className = "to-top";

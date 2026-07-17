@@ -986,6 +986,23 @@ ul {
   margin-top: 12px;
 }
 
+.policy-faq-link {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.policy-faq-link a {
+  color: var(--color-accent-dark);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s var(--ease);
+}
+
+.policy-faq-link a:hover {
+  border-bottom-color: var(--color-accent-dark);
+}
+
 .policy-score {
   display: flex;
   flex-direction: column;
@@ -1818,11 +1835,123 @@ ul {
   line-height: 1.85;
 }
 
-.form-embed {
+/* ---------- お問い合わせフォーム（内製） ---------- */
+.cform {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.cform__row {
+  margin-bottom: 26px;
+}
+
+.cform__label {
+  display: block;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.cform__req,
+.cform__opt {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-left: 8px;
+  vertical-align: 1px;
+}
+
+.cform__req {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.cform__opt {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.cform__input {
   width: 100%;
-  min-height: 900px;
+  padding: 13px 16px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--color-text);
+  background: #fff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.cform__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.15);
+}
+
+.cform__textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+
+.cform__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.cform__agree {
+  text-align: center;
+  margin: 30px 0 20px;
+}
+
+.cform__agree a {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.cf-turnstile {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.cform__error {
+  color: #a32d2d;
+  background: #fcebeb;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+.cform__submit {
+  text-align: center;
+}
+
+.cform__submit .btn {
+  min-width: 240px;
+}
+
+.cform__submit .btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.cform__done {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--color-base-alt);
+  border-radius: var(--radius);
+  padding: 48px 24px;
+  font-size: 1.05rem;
 }
 
 .form-placeholder {
