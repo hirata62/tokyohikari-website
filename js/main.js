@@ -269,6 +269,57 @@
     window.addEventListener("focus", resumeBackgroundVideos);
   }
 
+  /* ---- 数字バンド（トップページのみ）: 表示時にフェードイン＋カウントアップ ---- */
+  var statsBand = document.querySelector(".stats-band");
+  if (statsBand) {
+    var statsCounts = statsBand.querySelectorAll(".stats-item__num[data-value]");
+    var statsFormat = function (el, value) {
+      var d = parseInt(el.getAttribute("data-decimals"), 10) || 0;
+      return value.toLocaleString("ja-JP", { minimumFractionDigits: d, maximumFractionDigits: d });
+    };
+    var statsSetFinal = function () {
+      statsCounts.forEach(function (el) {
+        el.textContent = statsFormat(el, Number(el.getAttribute("data-value")));
+      });
+    };
+    var statsPlay = function () {
+      var start = null;
+      var duration = 1200;
+      var tick = function (now) {
+        if (start === null) start = now;
+        var p = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 4);
+        statsCounts.forEach(function (el) {
+          if (el.hasAttribute("data-static")) return;
+          var d = parseInt(el.getAttribute("data-decimals"), 10) || 0;
+          var v = Number(el.getAttribute("data-value")) * eased;
+          el.textContent = statsFormat(el, d ? v : Math.round(v));
+        });
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          statsSetFinal();
+        }
+      };
+      requestAnimationFrame(tick);
+    };
+    if (reduce || !("IntersectionObserver" in window)) {
+      statsBand.classList.add("is-visible");
+      statsSetFinal();
+    } else {
+      var statsIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            statsBand.classList.add("is-visible");
+            statsPlay();
+            statsIo.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      statsIo.observe(statsBand);
+    }
+  }
+
   /* ---- お問い合わせフォーム送信（contact.htmlのみ存在） ---- */
   var cform = document.getElementById("contact-form");
   if (cform) {

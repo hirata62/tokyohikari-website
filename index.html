@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Playfair+Display:wght@500;600&family=Shippori+Mincho:wght@500;600;700&family=Zen+Kaku+Gothic+Antique:wght@400;500;700;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/style.css?v=20260722" />
+  <link rel="stylesheet" href="css/style.css?v=20260729" />
 
   <!-- Favicon / App Icons -->
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -214,11 +214,34 @@
           <a href="contact.html#faq">よくあるご質問はこちら →</a>
         </p>
 
-        <div class="policy-score reveal">
-          <span class="policy-score__label">不動産投資ポータル「楽待」加盟店向け評価レポート（顧客アンケートに基づく）</span>
-          <span class="policy-score__value">4.20<small>/ 5点満点</small></span>
-          <span class="policy-score__caption">満足度評価（2026年7月6日時点）</span>
-        </div>
+        <!-- ============ STATS BAND（数字で見る東京ひかり不動産） ============ -->
+        <section class="stats-band" aria-labelledby="stats-title">
+          <div class="stats-band__bg" aria-hidden="true"></div>
+          <div class="stats-band__scrim" aria-hidden="true"></div>
+          <header class="stats-band__head">
+            <span class="stats-band__en">Facts &amp; Figures</span>
+            <h3 class="stats-band__title" id="stats-title">数字で見る東京ひかり不動産</h3>
+          </header>
+          <div class="stats-band__grid">
+            <div class="stats-item">
+              <p class="stats-item__value"><span class="stats-item__num" data-value="15000" data-decimals="0">0</span><span class="stats-item__unit">件〜<span class="stats-item__unit-week">/週</span></span></p>
+              <p class="stats-item__label">毎週の物件査定件数</p>
+            </div>
+            <div class="stats-item">
+              <p class="stats-item__value"><span class="stats-item__num" data-value="0.25" data-decimals="2">0.00</span><span class="stats-item__unit">%</span></p>
+              <p class="stats-item__label">社内審査基準の通過率</p>
+            </div>
+            <div class="stats-item">
+              <p class="stats-item__value"><span class="stats-item__num" data-value="4.20" data-decimals="2">0.00</span><span class="stats-item__unit">/5点</span></p>
+              <p class="stats-item__label">楽待 満足度評価</p>
+            </div>
+            <div class="stats-item">
+              <p class="stats-item__value"><span class="stats-item__num" data-value="0" data-decimals="0" data-static>0</span><span class="stats-item__unit">円</span></p>
+              <p class="stats-item__label">ご購入者様の月額管理料</p>
+            </div>
+          </div>
+          <p class="stats-band__note">※楽待加盟店向け評価レポート（2026年7月時点）／※区分物件のみ・条件あり</p>
+        </section>
 
         <!-- ============ VOICE（お客様の声） ============ -->
         <div class="voice">
@@ -442,6 +465,6 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=20260726"></script>
+  <script src="js/main.js?v=20260728"></script>
 </body>
 </html>
