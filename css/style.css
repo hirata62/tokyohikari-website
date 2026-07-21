@@ -671,9 +671,12 @@ ul {
 /* ---------- Page Hero (下層ページ) ---------- */
 .page-hero {
   position: relative;
-  background: linear-gradient(120deg, var(--color-primary-dark) 0%, var(--color-primary) 70%);
+  background:
+    linear-gradient(120deg, rgba(14, 38, 32, 0.90) 0%, rgba(20, 52, 43, 0.78) 70%),
+    url("../images/pagehero-dusk-pano.jpg") center 50% / cover no-repeat;
+  background-color: var(--color-primary);
   color: #fff;
-  padding: calc(var(--header-h) + 72px) 0 68px;
+  padding: calc(var(--header-h) + 96px) 0 88px;
   overflow: hidden;
 }
 

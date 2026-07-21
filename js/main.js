@@ -324,9 +324,11 @@
   var cform = document.getElementById("contact-form");
   if (cform) {
     var cformReady = false;
+    var tsErrorCount = 0;
     // Turnstileの認証（自動・非表示）が終わるまでボタンを押せなくし、
     // 「missing-input-response」（トークン未生成のまま送信）を防ぐ
     window.onTurnstileReady = function () {
+      tsErrorCount = 0;
       cformReady = true;
       var btn = document.getElementById("cform-submit");
       var warn = document.getElementById("cform-ts-warning");
@@ -368,8 +370,20 @@
       if (btn) btn.textContent = "認証に失敗しました";
     };
     window.onTurnstileScriptError = function () { showTurnstileWarning(); };
-    window.onTurnstileError = function (code) { showTurnstileWarning(code); };
-    setTimeout(function () { showTurnstileWarning(); }, 8000);
+    // 一時的なチャレンジ失敗（600010等）はウィジェットのリセットで自己回復することが多い。
+    // 回復の途中で警告を出すとユーザーを不安にさせるため、エラー回数では警告を出さず、
+    // バックオフしながら自動再試行を続ける。警告表示は下の最終タイムアウトに一本化する。
+    window.onTurnstileError = function () {
+      tsErrorCount++;
+      if (tsErrorCount > 8) return true; // 十分再試行しても回復しなければ諦める（警告は下で表示済み）
+      var retryDelay = Math.min(2000 * tsErrorCount, 8000); // 2s→4s→6s→8s上限でバックオフ
+      setTimeout(function () {
+        if (!cformReady && window.turnstile) window.turnstile.reset();
+      }, retryDelay);
+      return true; // true を返し「エラーは処理済み」と伝え、Turnstile側の既定リトライと二重実行になるのを防ぐ
+    };
+    // 再試行を続けても一定時間トークンが得られない場合のみ、警告と代替連絡手段を表示
+    setTimeout(function () { showTurnstileWarning(); }, 25000);
 
     cform.addEventListener("submit", function (e) {
       e.preventDefault();
