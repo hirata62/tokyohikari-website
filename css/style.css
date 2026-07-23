@@ -2702,13 +2702,15 @@ ul {
 }
 
 /* CTA額装カードのカーテンリビール:
-   「見えた(is-visible)」×「動画再生開始(is-ready)」が揃うと中央から左右へ開く */
+   画面の中ほどまで見えた(is-visible)時点で中央から左右へ開く。
+   動画の読み込み速度に左右されないよう、開きは動画(is-ready)から切り離している
+   （動画は開いた枠の中で読み込み次第フェードインする） */
 .reveal-clip {
   clip-path: inset(0 50% 0 50% round var(--radius));
   transition: clip-path 1.8s var(--ease);
 }
 
-.reveal-clip.is-visible.is-ready {
+.reveal-clip.is-visible {
   clip-path: inset(0 0 0 0 round var(--radius));
 }
 
