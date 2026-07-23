@@ -1,6 +1,26 @@
+// 旧・日本語URL（検索エンジンに残った旧インデックス）を現行の英語パスへ恒久リダイレクト。
+// 例: /会社概要 (/%E4%BC%9A%E7%A4%BE%E6%A6%82%E8%A6%81) → /company.html
+const LEGACY_PATH_MAP = {
+  "/会社概要": "/company.html",
+  "/業務内容": "/services.html",
+  "/アクセス": "/access.html",
+  "/お問い合わせ": "/contact.html",
+  "/3つの強み": "/strengths.html",
+  "/プライバシーポリシー": "/privacy.html",
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // %エンコードされた旧URLをデコードして判定（末尾スラッシュは無視）
+    let decodedPath = url.pathname;
+    try { decodedPath = decodeURIComponent(url.pathname); } catch (e) {}
+    decodedPath = decodedPath.replace(/\/+$/, "");
+    if (LEGACY_PATH_MAP[decodedPath]) {
+      return Response.redirect(url.origin + LEGACY_PATH_MAP[decodedPath], 301);
+    }
+
     if (url.pathname === "/api/contact") {
       if (request.method !== "POST") {
         return json({ ok: false, error: "method_not_allowed" }, 405);

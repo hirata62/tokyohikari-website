@@ -63,23 +63,35 @@
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   if (reveals.length && !reduce && "IntersectionObserver" in window) {
+    var revealOnIntersect = function (entry, observer) {
+      var el = entry.target.__revealEl || entry.target;
+      el.classList.add("is-visible");
+      // reveal-clip: 動画側の合図(is-ready)が来なくても3秒後には必ず開く保険
+      if (el.classList.contains("reveal-clip")) {
+        setTimeout(function () {
+          el.classList.add("is-ready");
+        }, 3000);
+      }
+      observer.unobserve(entry.target);
+    };
+    // 通常のフェードイン系（.reveal）は画面下端で早めに発火させる
     var io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var el = entry.target.__revealEl || entry.target;
-            el.classList.add("is-visible");
-            // reveal-clip: 動画側の合図(is-ready)が来なくても3秒後には必ず開く保険
-            if (el.classList.contains("reveal-clip")) {
-              setTimeout(function () {
-                el.classList.add("is-ready");
-              }, 3000);
-            }
-            io.unobserve(entry.target);
-          }
+          if (entry.isIntersecting) revealOnIntersect(entry, io);
         });
       },
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    // CTAカーテン(reveal-clip)は画面下端で早く開き切ると演出を見逃しやすいため、
+    // 要素が画面の中ほど（下から約30%）まで入ってから開くよう、専用トリガーで監視する
+    var ioClip = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) revealOnIntersect(entry, ioClip);
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px -30% 0px" }
     );
     reveals.forEach(function (el) {
       // clip-pathで初期の可視面積がゼロの要素は、ChromeのIntersectionObserverが
@@ -87,7 +99,7 @@
       if (el.classList.contains("reveal-clip")) {
         var sentinel = el.closest(".cta-band") || el;
         sentinel.__revealEl = el;
-        io.observe(sentinel);
+        ioClip.observe(sentinel);
       } else {
         io.observe(el);
       }
