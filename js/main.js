@@ -83,15 +83,16 @@
       },
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
-    // CTAカーテン(reveal-clip)は画面下端で早く開き切ると演出を見逃しやすいため、
-    // 要素が画面の中ほど（下から約30%）まで入ってから開くよう、専用トリガーで監視する
+    // CTAカーテン(reveal-clip)は縦に大きく、画面下寄りで開くと視界の中心から外れて
+    // 見逃されやすい。枠が画面の中央付近（上端が画面の約50%）まで来てから開くよう、
+    // 下方に大きめの負マージンを付けた専用トリガーで監視する
     var ioClip = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) revealOnIntersect(entry, ioClip);
         });
       },
-      { threshold: 0, rootMargin: "0px 0px -30% 0px" }
+      { threshold: 0, rootMargin: "0px 0px -50% 0px" }
     );
     reveals.forEach(function (el) {
       // clip-pathで初期の可視面積がゼロの要素は、ChromeのIntersectionObserverが
