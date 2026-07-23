@@ -2705,22 +2705,32 @@ ul {
 }
 
 /* CTA額装カードのカーテンリビール:
-   画面の中ほどまで見えた(is-visible)時点で中央から左右へ開く。
-   動画の読み込み速度に左右されないよう、開きは動画(is-ready)から切り離している
-   （動画は開いた枠の中で読み込み次第フェードインする） */
-.reveal-clip {
-  clip-path: inset(0 50% 0 50% round var(--radius));
-  transition: clip-path 1.8s var(--ease);
+   clip-pathはスクロール中に中間フレームが再描画されず演出が飛ぶ環境があるため、
+   画像を覆う左右2枚のパネルを transform で外へスライドさせて開く方式に変更。
+   transformはスクロール中でも確実に描画される。is-visibleが付くと左右へ退避する。
+   （画面の中ほどまで見えた時点でJS側がis-visibleを付与） */
+.reveal-clip__curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  width: calc(50% + 1px); /* 左右で中央を1pxずつ重ねて隙間を防ぐ */
+  background: var(--color-primary-dark);
+  pointer-events: none;
+  transition: transform 1.8s var(--ease);
+  will-change: transform;
 }
 
-.reveal-clip.is-visible {
-  clip-path: inset(0 0 0 0 round var(--radius));
-}
+.reveal-clip__curtain--left { left: 0; }
+.reveal-clip__curtain--right { right: 0; }
+
+.reveal-clip.is-visible .reveal-clip__curtain--left { transform: translateX(-100%); }
+.reveal-clip.is-visible .reveal-clip__curtain--right { transform: translateX(100%); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .reveal-clip { clip-path: none; transition: none; }
+  .reveal-clip__curtain { display: none; }
   .policy-grid .policy-item.reveal { transform: none; transition: none; }
   .policy-item__marker { background-size: 100% 38%; transition: none; }
   .policy-item__marker-line { background-size: 100% 38%; transition: none !important; }
