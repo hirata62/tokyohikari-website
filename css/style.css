@@ -2290,7 +2290,10 @@ ul {
   min-height: 480px;
   margin: 56px 0 56px 56px;
   border-radius: var(--radius);
-  background: var(--color-primary-dark); /* 動画読込前・reduced-motion時の下地 */
+  /* 動画の読み込み前でもポスター画像を表示する。下地の深緑はセクション背景と同色で、
+     画像が無いとカーテンが開いても「深緑が深緑の上で開く」形になり演出が見えないため。
+     ポスターを敷くことで、動画の速度に関わらず開閉が必ず見えるようにする */
+  background: var(--color-primary-dark) url("../images/cta-tower-day-poster.jpg") 25% 50% / cover no-repeat;
 }
 
 .cta-band__media .cta-band__video {
