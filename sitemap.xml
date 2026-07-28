@@ -6,37 +6,37 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/services.html</loc>
+    <loc>https://www.tokyohikari.jp/services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/strengths.html</loc>
+    <loc>https://www.tokyohikari.jp/strengths</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/company.html</loc>
+    <loc>https://www.tokyohikari.jp/company</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/access.html</loc>
+    <loc>https://www.tokyohikari.jp/access</loc>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/contact.html</loc>
+    <loc>https://www.tokyohikari.jp/contact</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/column.html</loc>
+    <loc>https://www.tokyohikari.jp/column</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.tokyohikari.jp/column-inflation.html</loc>
+    <loc>https://www.tokyohikari.jp/column-inflation</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>

@@ -1,12 +1,12 @@
 // 旧・日本語URL（検索エンジンに残った旧インデックス）を現行の英語パスへ恒久リダイレクト。
-// 例: /会社概要 (/%E4%BC%9A%E7%A4%BE%E6%A6%82%E8%A6%81) → /company.html
+// 例: /会社概要 (/%E4%BC%9A%E7%A4%BE%E6%A6%82%E8%A6%81) → /company
 const LEGACY_PATH_MAP = {
-  "/会社概要": "/company.html",
-  "/業務内容": "/services.html",
-  "/アクセス": "/access.html",
-  "/お問い合わせ": "/contact.html",
-  "/3つの強み": "/strengths.html",
-  "/プライバシーポリシー": "/privacy.html",
+  "/会社概要": "/company",
+  "/業務内容": "/services",
+  "/アクセス": "/access",
+  "/お問い合わせ": "/contact",
+  "/3つの強み": "/strengths",
+  "/プライバシーポリシー": "/privacy",
 };
 
 export default {
