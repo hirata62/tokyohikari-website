@@ -48,6 +48,16 @@
     });
   }
 
+  /* ---- 期間限定のお知らせ帯 ----
+     data-notice-until の日付（日本時間の終日）を過ぎたら自動的に取り除く。
+     掲載を終えたらHTML側のブロックごと削除してよい。 */
+  document.querySelectorAll("[data-notice-until]").forEach(function (el) {
+    var end = new Date(el.getAttribute("data-notice-until") + "T23:59:59+09:00");
+    if (!isNaN(end.getTime()) && Date.now() > end.getTime()) {
+      el.remove();
+    }
+  });
+
   /* ---- Header shadow on scroll ---- */
   var header = document.querySelector(".header");
   if (header) {
