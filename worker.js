@@ -9,6 +9,12 @@ const LEGACY_PATH_MAP = {
   "/プライバシーポリシー": "/privacy",
 };
 
+// サイトの正規オリジン。www無し・httpでも同じ内容が見えると重複扱いになるため、
+// ここへ301で集約する。ローカル開発やworkers.devは対象外にしたいので
+// 本番の2ホストだけを判定対象にする。
+const CANONICAL_HOST = "www.tokyohikari.jp";
+const PRODUCTION_HOSTS = ["tokyohikari.jp", "www.tokyohikari.jp"];
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -17,8 +23,27 @@ export default {
     let decodedPath = url.pathname;
     try { decodedPath = decodeURIComponent(url.pathname); } catch (e) {}
     decodedPath = decodedPath.replace(/\/+$/, "");
-    if (LEGACY_PATH_MAP[decodedPath]) {
-      return Response.redirect(url.origin + LEGACY_PATH_MAP[decodedPath], 301);
+
+    // 正規化（ホスト・プロトコル・旧日本語URL）はまとめて1回の301で返す。
+    // 個別に返すと「www無しの旧URL」で転送が2回連鎖してしまうため。
+    const needsHostFix =
+      PRODUCTION_HOSTS.includes(url.hostname) &&
+      (url.hostname !== CANONICAL_HOST || url.protocol !== "https:");
+    const legacyTarget = LEGACY_PATH_MAP[decodedPath];
+
+    if (needsHostFix || legacyTarget) {
+      const target = new URL(url);
+      if (needsHostFix) {
+        target.protocol = "https:";
+        target.hostname = CANONICAL_HOST;
+      }
+      if (legacyTarget) {
+        target.pathname = legacyTarget;
+      }
+      // GET/HEAD は301。それ以外（お問い合わせフォームのPOST等）は
+      // 301だとメソッドとBodyが失われるため、それらを保持する308を使う。
+      const isSafeMethod = request.method === "GET" || request.method === "HEAD";
+      return Response.redirect(target.toString(), isSafeMethod ? 301 : 308);
     }
 
     if (url.pathname === "/api/contact") {
