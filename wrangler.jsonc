@@ -4,7 +4,11 @@
   "compatibility_date": "2025-01-01",
   "assets": {
     "directory": "./",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // 既定では静的ファイルがワーカーより先に配信されるため、/company のような
+    // ページでworker.jsのリダイレクト（www無し・httpの正規化）が動かない。
+    // ワーカーを先に通し、最後の env.ASSETS.fetch() でファイルを返す。
+    "run_worker_first": true
   },
   "observability": {
     "enabled": true,
