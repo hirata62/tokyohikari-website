@@ -14,7 +14,11 @@
     "enabled": true,
     "logs": {
       "enabled": true,
-      "invocation_logs": true
+      // run_worker_first により画像・CSS等の読み込みも1件ずつ記録されてしまうため、
+      // リクエストごとの自動記録は止める。worker.js の console.log
+      // （お問い合わせフォームの失敗記録）は引き続き残る。
+      // 2026-12-01 から Observability がログ量に応じた課金になったことへの対応。
+      "invocation_logs": false
     }
   }
 }
